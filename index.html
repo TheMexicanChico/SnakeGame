@@ -127,7 +127,28 @@
             } else if(direction === 4){ //bottom
                 direction = 3;
             }
+
+            // get the random rodent location
         });
+
+        function getRandomRodent(size,snake) {
+
+        }
+
+        function getAvailableBlocks() {
+            let blocks = [];
+            let snakeArr = [...snake.tail,snake.head];
+
+        }
+
+        function arrayHasBlock(blockArray, block) {
+            blockArray.forEach(obj => {
+                if (obj.x === block.x && obj.y === block.y) {
+                    return true;
+                }
+            });
+            return false
+        }
 
         function getRandomInt(min, max) {
             min = Math.ceil(min);
