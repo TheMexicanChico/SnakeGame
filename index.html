@@ -129,16 +129,48 @@
             }
 
             // get the random rodent location
+            rodent = getRandomRodent(size,snake);
+
+            //draw initial grid
+            redrawGrid(size,table,snake,rodent);
+
+            updateScore(score);
         });
 
-        function getRandomRodent(size,snake) {
+        function startFrames(size, table, snake, rodent){
+            let intervalFunction = () => {
+                //based on the direction, set the new snake and rodent position.
+                let nextBlock = getDirectionalBlock(snake.head.x, snake.head.y, direction);
 
+                //if the directional block is invalid then game over
+                if(!isblockValid(nextBlock.x, nextBlock.y, size, snake)){
+                    //Game over
+                    gameLost();
+                    clearInterval(frameInterval);
+                } else {
+                
+            };
+            frameInterval = setInterval(intervalFunction, speed);
+        }
+    }
+        function getRandomRodent(size,snake) {
+            let availableBlocks = getAvailableBlocks(size, snake);
+            let randomIdx = getRandomInt(0, availableBlocks.length - 1);
+            return availableBlocks[randomIdx];
         }
 
         function getAvailableBlocks() {
             let blocks = [];
             let snakeArr = [...snake.tail,snake.head];
-
+            for (let i=0;i<size;i++) {
+                for (let j=0;j<size;j++) {
+                    let block = {x:i,y:j};
+                    if (!arrayHasBlock(snakeArr,block)){
+                        block.push(block);
+                    }
+                }
+            }
+            return blocks;
         }
 
         function arrayHasBlock(blockArray, block) {
@@ -148,6 +180,21 @@
                 }
             });
             return false
+        }
+
+        function redrawGrid(size, table, snake, rodent){
+            for(let i=0;i<size;i++){
+                for(let j=0;j<size;j++){
+                    table.querySelector(['#block', i, j].join('')).setAttribute('class', 'blockOff');                    
+                }
+            }
+
+            table.querySelector(['#block', snake.head.x, snake.head.y].join('')).setAttribute('class', 'blockSnakeHead');
+            snake.tail.forEach(obj => {
+                table.querySelector(['#block', obj.x, obj.y].join('')).setAttribute('class', 'blockSnakeTail');
+            });
+
+            table.querySelector(['#block', rodent.x, rodent.y].join('')).setAttribute('class', 'blockSnakeRodent');
         }
 
         function getRandomInt(min, max) {
@@ -195,6 +242,12 @@
             }
             return valid;
         }
+
+        function updateScore(score) {
+            divScore.innerHTML = `Score: ${score}`;
+        }
+
+
 
         </script>
     </body>
