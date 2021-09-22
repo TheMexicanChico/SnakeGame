@@ -128,16 +128,20 @@
                 direction = 3;
             }
 
-            // get the random rodent location
+            // get the random rodent location 
             rodent = getRandomRodent(size,snake);
 
             //draw initial grid
             redrawGrid(size,table,snake,rodent);
 
             updateScore(score);
+
+            setTimeout(() => {
+                startFrames(size,table,snake,rodent);
+            }, 2000);
         });
 
-        function startFrames(size, table, snake, rodent){
+        function startFrames(size, table, snake, rodent) {
             let intervalFunction = () => {
                 //based on the direction, set the new snake and rodent position.
                 let nextBlock = getDirectionalBlock(snake.head.x, snake.head.y, direction);
@@ -148,11 +152,44 @@
                     gameLost();
                     clearInterval(frameInterval);
                 } else {
-                
+                //if the next block is rodent, then increase the snake tail and get new rodent
+                if(nextBlock.x === rodent.x && nextBlock.y === rodent.y) {
+                        score++;
+                        speed -= 10;
+                        if(speed < 10) speed = 10;
+
+                        //clear interval and set with new speed
+                        clearInterval(frameInterval);
+                        frameInterval = setInterval(intervalFunction, speed);
+
+                        updateScore(score);
+
+                        //move snake head to tail array start
+                        snake.tail = [{x: snake.head.x, y: snake.head.y}, ...snake.tail];
+
+                        //set snake head as rodent position
+                        snake.head = {x: rodent.x, y:rodent.y};
+
+                        //get new rodent position
+                        rodent = getRandomRodent(size, snake);
+                    } else {
+                        //move the snake in the next direction
+                        let tempHead = {x: snake.head.x, y:snake.head.y};
+                        snake.head = {x: nextBlock.x, y:nextBlock.y};
+
+
+                        //shift the snake tail blocks                        
+                        for(let i=snake.tail.length - 1;i>=1;i--){
+                            snake.tail[i] = {x: snake.tail[i-1].x, y: snake.tail[i-1].y};
+                        }
+                        snake.tail[0] = {x: tempHead.x, y:tempHead.y};
+                    }
+                    redrawGrid(size, table, snake, rodent);
+                }        
             };
             frameInterval = setInterval(intervalFunction, speed);
         }
-    }
+
         function getRandomRodent(size,snake) {
             let availableBlocks = getAvailableBlocks(size, snake);
             let randomIdx = getRandomInt(0, availableBlocks.length - 1);
@@ -224,7 +261,7 @@
         function isblockValid(x,y,size,snake) {
             let valid = true;
 
-            //if block is out of bounds
+            //if block is out of bounds 
             valid = (x >= 0 && x <= size -1) && (y >= 0 && y <= size - 1);
 
             //if the block is on the snake
