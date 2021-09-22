@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        #divScore{
+            display:block;
+            width:200px;
+            margin:0 auto;
+            font-size: 20px;
+            text-align: center;
+        }
+
+        .gameTable{
+            margin: 0 auto;
+        }
+        </style>
+        </head>
+        <body>
+            Enter size: <input id="txtSize" type="text"/> <br/>
+    <input type="button" id="btnStart" value="Start"/><br/>
+
+    </div>
+    <script>
+        // Denote where the snake, rodent, and it's tail will be on the grid 
+        let divGame = document.querySelector("#divGame");
+        let divScore;
+        let snake = {head: {x:0,y:0}, tail:[]};
+        let rodent = {x:0,y:0};
+        let direction;
+        let size;
+        // Interval between multiple frames (Delay on snake) reduce amount to increase speed
+        let speed = 250;
+        let lost = false;
+        let score = 1;
+        let frameInterval;
+
+        document.querySelector('#btnStart').addEventListener('click', function(){
+            size = document.querySelector('#txtSize').value;
+
+            //Add the message labels
+            divScore = document.createElement('div');
+            divScore.setAttribute('id', 'divScore');
+            document.body.appendChild(divScore);
+
+            //construct the grid
+            let table = document.createElement('table');
+            table.setAttribute('cellspacing', 0);
+            table.setAttribute('class', 'gameTable');
+            document.body.appendChild(table);
+
+            for(let i = 0;i<size;i++){
+                let row = document.createElement('tr');
+                table.appendChild(row);
+                for(let j = 0;j<size;j++){
+
+                }
+            }
+        }
+        </script>
+    </body>
+</html>
