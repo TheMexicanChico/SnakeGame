@@ -17,6 +17,45 @@
         .gameTable{
             margin: 0 auto;
         }
+
+        .blockOff{
+            width: 20px;
+            height: 20px;
+            display: inline-block;
+            border: 1px solid black;
+            margin-right: 1px;
+            margin-bottom: 1px;
+        }
+
+        .blockSnakeTail{
+            width: 20px;
+            height: 20px;
+            display: inline-block;
+            background-color: black;
+            border: 1px solid black;
+            margin-right: 1px;
+            margin-bottom: 1px;
+        }
+
+        .blockSnakeHead{
+            width: 20px;
+            height: 20px;
+            display: inline-block;
+            background-color: green;
+            border: 1px solid green;
+            margin-right: 1px;
+            margin-bottom: 1px;
+        }
+
+        .blockSnakeRodent{
+            width: 20px;
+            height: 20px;
+            display: inline-block;
+            background-color: red;
+            border: 1px solid red;
+            margin-right: 1px;
+            margin-bottom: 1px;
+        }
         </style>
         </head>
         <body>
@@ -55,11 +94,87 @@
             for(let i = 0;i<size;i++){
                 let row = document.createElement('tr');
                 table.appendChild(row);
-                for(let j = 0;j<size;j++){
-
+                for(let j = 0;j<size;j++) {
+                    let block = document.createElement('td');
+                    block.setAttribute('class','blockOff');
+                    block.setAttribute('id', ['block',j,i].join(''));
+                    row.appendChild(block);
                 }
             }
+            //create the snake
+            let xVal, yVal;
+            xVal = getRandomInt(0, size-1);
+            yVal = getRandomInt(0, size-1);
+            snake.head = {x:xVal, y:yVal};
+
+            direction = getRandomInt(1,4);
+            let block = getDirectionBlock(snake.head.x, snake.head.y, direction);
+
+            while(!isblockValid(block.x, block.y, size, snake)){
+                direction = getRandomInt(1, 4);
+                block = getDirectionalBlock(snake.head.x, snake.head.y, direction);
+            }
+
+            snake.tail.push({x: block.x, y: block.y});
+
+            //set the opposite direction for the movement
+            if(direction === 1){ //left
+                direction = 2;
+            } else if(direction === 2){ //right
+                direction = 1;
+            } else if(direction === 3){ //top
+                direction = 4;
+            } else if(direction === 4){ //bottom
+                direction = 3;
+            }
+        });
+
+        function getRandomInt(min, max) {
+            min = Math.ceil(min);
+            max = Math.floor(max);
+            return Math.floor(Math.random() * (max - min + 1)) + min;
         }
+
+        function getDirectionBlock(x,y,direction) {
+            // 1 = left
+            // 2 = right
+            // 3 = top
+            // 4 = bottom
+
+            switch(direction) {
+                case 1: //left
+                    return {x: x - 1, y : y};
+                case 2: //right
+                    return {x: x + 1, y : y};
+                case 3: //top
+                    return {x : x, y : y - 1};
+                case 4: //bottom
+                    return {x : x, y : y + 1};
+            }
+        }
+
+        function isblockValid(x,y,size,snake) {
+            let valid = true;
+
+            //if block is out of bounds
+            valid = (x >= 0 && x <= size -1) && (y >= 0 && y <= size - 1);
+
+            //if the block is on the snake
+            if (valid && x === snake.head.x && y === snake.head.y) {
+                valid = false;
+            }
+
+            if (valid && snake.tail.length) {
+                for(let i=0;i<snake.tail.length;i++){
+                    if(x === snake.tail[i].x && y === snake.tail[i].y){
+                        valid = false;
+                        break;
+                    }
+                }
+            }
+            return valid;
+        }
+
         </script>
     </body>
 </html>
